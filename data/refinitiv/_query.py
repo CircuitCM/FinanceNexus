@@ -1,4 +1,4 @@
-from data.postgres import connect_wrapper,Connection,dr
+from data.postgres import connect_wrapper,Connection
 from ._request import get_data, yield_data, ayield_data
 
 from ._refinitiv_tables import get_refinitiv_table, new_refinitiv_table
@@ -18,11 +18,14 @@ async def load_data(universe, fields, parameters=None,field_name=None,closure=No
     #if does, get field & parameters/field headers
     #else get
     instrument, fields, parameters, init_headers=parameters_to_fieldheader(fields,parameters)
+
     #check instrument as table exists
 
 
-async def query_data(universe,args):
 
+
+async def query_data(universe,args):
+    pass
 
 
 # async def tester():

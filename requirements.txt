@@ -1,0 +1,15 @@
+aioconsole==0.4.1
+aiohttp==3.8.1
+asyncpg==0.25.0
+beautifulsoup4==4.10.0
+colorama==0.4.4
+dash_core_components==2.0.0
+img2pdf==0.4.3
+numpy==1.22.3
+pandas==1.4.1
+plotly==5.6.0
+pydatastream==0.6.5
+scipy==1.8.0
+termcolor==1.1.0
+uvloop==0.16.0
+refinitiv-dataplatform

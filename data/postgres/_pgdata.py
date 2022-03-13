@@ -17,11 +17,14 @@ def connect_wrapper(func):
             else:
                 cn = kwargs.get('con',0)
         else:
-            cn=None
-        if cn is or cn==0:
+            cn = kwargs.get('con',0)
+        if cn is None or cn==0:
             async with acquire() as nn:
                 # async with con.transaction():
-                return await func(*[*args,nn],**kwargs)
+                if cn == 0:
+                    return await func(*[*args,nn],**kwargs)
+                else:
+                    return await func(*args, **(kwargs|{'con':nn}))
         else:
             return await func(*args,**kwargs)
     return _r
@@ -57,6 +60,7 @@ async def yield_rows(c_text:Union[str,iter,aiter],con:Connection,prepare=None):
                 async for row in stmt.cursor(*i):
                     yield row
 
+
 @connect_wrapper
 async def yield_fetches(f_iter:Union[iter,aiter],con:Connection):
     #will yield fetches 1 by 1
@@ -70,6 +74,7 @@ async def yield_fetches(f_iter:Union[iter,aiter],con:Connection):
                 for i in f_iter:
                     f = await con.fetch(i)
                     yield f
+
 
 async def bulk_fetch_yield(f_iter:Union[iter,aiter]):
     #assumes very high volume and (probably)different tables, as many connections as needed

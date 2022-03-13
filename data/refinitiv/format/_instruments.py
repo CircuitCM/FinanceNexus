@@ -2,6 +2,7 @@ import re
 from types import NoneType
 
 
+
 class DataPackage():
     #refinitiv data fields held in class
     __slots__ = ('universe', 'fields', 'parameters','field_name','closure')

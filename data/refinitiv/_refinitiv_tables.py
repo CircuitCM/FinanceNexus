@@ -27,24 +27,26 @@ _REFIN_TB={}
 #         upd = ftp.alter_by_sample(sample)
 #         if upd is not None: await con.execute(upd)
 #     return ftp
+REFINITIV_T = '{Refinitiv}'
 
 async def get_refinitiv_table(instrument:str, con:Connection):
-    ftp = _REFIN_TB.get(instrument, None)
+    ftp = _REFIN_TB.get(REFINITIV_T+instrument, None)
     if ftp is None:
-        rc: list[Record] = await lookup_table(instrument, con=con)
+        rc: list[Record] = await lookup_table(REFINITIV_T+instrument, con=con)
         # c0 will be name, c1 will be type
         if len(rc) > 0:
-            fmt = {}
-            for i in rc:
-                fmt[i[0]] = i[1]
-            ftp = TableFormat(instrument, fmt, keys={'accession': 'PRIMARY KEY'})
+            fmt={i[0]:i[1] for i in rc}
+            ftp = TableFormat(REFINITIV_T+instrument, fmt, constraints={f'UNIQUE ({",".join(i[0] for i in rc)})'})
             _REFIN_TB[instrument] = ftp
     return ftp
 
+
 async def new_refinitiv_table(instrument:str, sample:dict, con:Connection):
     #print(f'Creating table for new filing type {filing_type}')
-    ftp = TableFormat(instrument, sample=sample, keys={'accession': 'PRIMARY KEY'})
+    ftp = TableFormat(REFINITIV_T+instrument, sample=sample, constraints={f'UNIQUE ({",".join(i[0] for i in sample.items())})'})
     ctbl = ftp.create_table_template()
     if ctbl is not None: await con.execute(ctbl)
     _REFIN_TB[instrument] = ftp
     return ftp
+
+
